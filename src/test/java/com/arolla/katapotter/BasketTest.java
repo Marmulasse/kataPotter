@@ -21,4 +21,12 @@ public class BasketTest {
         assertThat(new Basket(Arrays.asList(1, 1, 1)).price()).isEqualTo(8 * 3);
     }
 
+    @Test
+    public void should_return_prices_with_simple_discount(){
+        assertThat(new Basket(Arrays.asList(0, 1)).price()).isEqualTo(8 * 2 * 0.95);
+        assertThat(new Basket(Arrays.asList(0, 2, 4)).price()).isEqualTo(8 * 3 * 0.9);
+        assertThat(new Basket(Arrays.asList(0, 1, 2, 4)).price()).isEqualTo(8 * 4 * 0.8);
+        assertThat(new Basket(Arrays.asList(0, 1, 2, 3, 4)).price()).isEqualTo(8 * 5 * 0.75);
+    }
+
 }
