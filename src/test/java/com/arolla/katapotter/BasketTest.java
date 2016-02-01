@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BasketTest {
 
     @Test
-    public void should_return_prices_without_discount(){
+    public void should_return_prices_without_discount() {
         assertThat(new Basket(Arrays.asList()).price()).isEqualTo(0);
         assertThat(new Basket(Arrays.asList(0)).price()).isEqualTo(8);
         assertThat(new Basket(Arrays.asList(1)).price()).isEqualTo(8);
@@ -22,11 +22,18 @@ public class BasketTest {
     }
 
     @Test
-    public void should_return_prices_with_simple_discount(){
+    public void should_return_prices_with_simple_discount() {
         assertThat(new Basket(Arrays.asList(0, 1)).price()).isEqualTo(8 * 2 * 0.95);
         assertThat(new Basket(Arrays.asList(0, 2, 4)).price()).isEqualTo(8 * 3 * 0.9);
         assertThat(new Basket(Arrays.asList(0, 1, 2, 4)).price()).isEqualTo(8 * 4 * 0.8);
         assertThat(new Basket(Arrays.asList(0, 1, 2, 3, 4)).price()).isEqualTo(8 * 5 * 0.75);
+    }
+
+    @Test
+    public void should_return_several_discounts() {
+        assertThat(new Basket(Arrays.asList(0, 0, 1)).price()).isEqualTo(8 + (8 * 2 * 0.95));
+        assertThat(new Basket(Arrays.asList(0, 0, 1, 1)).price()).isEqualTo(2 * (8 * 2 * 0.95));
+        assertThat(new Basket(Arrays.asList(0, 1, 1, 2, 3, 4)).price()).isEqualTo(8 + (8 * 5 * 0.75));
     }
 
 }
