@@ -36,4 +36,15 @@ public class BasketTest {
         assertThat(new Basket(Arrays.asList(0, 1, 1, 2, 3, 4)).price()).isEqualTo(8 + (8 * 5 * 0.75));
     }
 
+    @Test
+    public void should_return_edge_cases() {
+        assertThat(new Basket(Arrays.asList(0, 0, 1, 1, 2, 2, 3, 4)).price()).isEqualTo(2 * (8 * 4 * 0.8));
+        assertThat(new Basket(Arrays.asList(
+                0, 0, 0, 0, 0,
+                1, 1, 1, 1, 1,
+                2, 2, 2, 2,
+                3, 3, 3, 3, 3,
+                4, 4, 4, 4)).price()).isEqualTo(3 * (8 * 5 * 0.75) + 2 * (8 * 4 * 0.8));
+    }
+
 }

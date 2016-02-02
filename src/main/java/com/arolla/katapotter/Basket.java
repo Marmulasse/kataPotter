@@ -1,9 +1,7 @@
 package com.arolla.katapotter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -23,28 +21,36 @@ public class Basket {
     }
 
     public double price() {
-        return accumulateSeries(DEFAULT_PRICE, new ArrayList<>(books));
-    }
-
-    public double accumulateSeries(double price, List<BookNumber> booksLeft){
-        Set<BookNumber> series = getSeries(booksLeft);
-        series.forEach(booksLeft::remove);
-        if(hasSeries(booksLeft)){
-            price = accumulateSeries(price, booksLeft);
+        if(books.isEmpty()){
+            return DEFAULT_PRICE;
         }
-        return addPrice(price, series);
+
+        List<Discount> discounts = accumulateDiscounts(new ArrayList<>(), new ArrayList<>(books));
+
+        while(DiscountOptimization.TEN_AND_TWENTY_FIVE_TO_TWENTY_AND_TWENTY.available(discounts)){
+            discounts = DiscountOptimization.TEN_AND_TWENTY_FIVE_TO_TWENTY_AND_TWENTY.apply(discounts);
+        }
+
+        return discounts.stream()
+                .map(this::calculatePrice)
+                .reduce(DEFAULT_PRICE, (total, price) -> total += price);
     }
 
-    private double addPrice(double price, Set<BookNumber> series) {
-        price += series.size() * BOOK_PRICE * DiscountValue.getDiscountValueFromTypes(series.size()).getValue();
-        return price;
+    private double calculatePrice(Discount d) {
+        return d.getSeriesSize() * BOOK_PRICE * d.getValue();
     }
 
-    private boolean hasSeries(List<BookNumber> booksLeft) {
-        return getSeries(booksLeft).size() > 0;
+
+    public List<Discount> accumulateDiscounts(final List<Discount> discounts, final List<BookNumber> booksLeft){
+        Set<BookNumber> series = new HashSet<>(booksLeft);
+        series.forEach(booksLeft::remove);
+        discounts.add(Discount.fromSizeOfSeries(series.size()));
+
+        return hasDiscountLeft(booksLeft) ? accumulateDiscounts(discounts, booksLeft) : discounts;
     }
 
-    private Set<BookNumber> getSeries(List<BookNumber> booksLeft) {
-        return new HashSet<>(booksLeft);
+    private boolean hasDiscountLeft(final List<BookNumber> booksLeft) {
+        return Discount.fromSizeOfSeries(new HashSet<>(booksLeft).size()) != null;
     }
+
 }
