@@ -1,7 +1,6 @@
 package com.arolla.katapotter;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -27,8 +26,9 @@ public class Basket {
 
         List<Discount> discounts = accumulateDiscounts(new ArrayList<>(), new ArrayList<>(books));
 
-        while(DiscountOptimization.TEN_AND_TWENTY_FIVE_TO_TWENTY_AND_TWENTY.available(discounts)){
-            discounts = DiscountOptimization.TEN_AND_TWENTY_FIVE_TO_TWENTY_AND_TWENTY.apply(discounts);
+       DiscountOptimization discountOptimization = DiscountOptimization.get();
+       while(discountOptimization.available(discounts)){
+            discounts = discountOptimization.apply(discounts);
         }
 
         return discounts.stream()
