@@ -1,5 +1,7 @@
 package com.arolla.katapotter;
 
+import java.util.Optional;
+
 /**
 * Created by dpanza on 01/02/16.
 */
@@ -26,12 +28,12 @@ enum Discount {
         return discountValue;
     }
 
-    public static Discount fromSizeOfSeries(long sizeOfSeries){
+    public static Optional<Discount> fromSizeOfSeries(long sizeOfSeries){
         for (Discount discount : values()) {
             if(discount.seriesSize == sizeOfSeries){
-                return discount;
+                return Optional.of(discount);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }
